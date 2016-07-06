@@ -15,7 +15,7 @@ app.on('window-all-closed', () => {
 });
 
 app.on('ready', () => {
-  mainWindow = new BrowserWindow({ width: 1200, height: 1000 });
+  mainWindow = new BrowserWindow({ width: 1200, height: 1000, center:true });
 
   mainWindow.loadUrl(`file://${__dirname}/client/index.html`);
 

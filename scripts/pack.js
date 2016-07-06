@@ -39,3 +39,19 @@ packager({
   if (err) return console.error(err);
   console.log(appPath);
 });
+
+packager({
+  dir: '.',
+  name: packageJson.name,
+  platform: 'win32',
+  arch: 'x64',
+  version: require('electron-prebuilt/package.json').version,
+  overwrite: true,
+  prune: true,
+  ignore: new RegExp(`node_modules/(${nodeModuleIgnores.join('|')})`),
+  // asar: true,
+  out: 'dist'
+}, (err, appPath) => {
+  if (err) return console.error(err);
+  console.log(appPath);
+});
