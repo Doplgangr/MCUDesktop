@@ -27,15 +27,15 @@ export default class App extends React.Component {
           <div className="four wide column">
             <div className="ui vertical fluid menu">
               {this.renderMenu()}
+            <div className="ui bottom attached active progress" data-percent="74">
+              <div className="bar"></div>
+              <div className="label">FUMIST</div>
             </div>
+            </div>            
           </div>
           
           <div className="twelve wide stretched column">
             {this.renderMain(user)}
-            <div className="ui tiny progress">
-              <div className="bar"></div>
-              <div className="label">FUMIST</div>
-            </div>
           </div>
         </div>
     );

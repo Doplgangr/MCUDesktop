@@ -56,9 +56,28 @@ export default class Dashboard extends Backend{
         );
     }
     readAll(onDatabaseChange) {
-        return eventDB.query(function (doc, emit) {
-                emit(doc.date + doc.time);
-            },{ include_docs: true })
+        // document that tells PouchDB/CouchDB
+        // to build up an index on doc.name
+        var ddoc = {
+        _id: '_design/start_time',
+        views: {
+            asc: {
+            map: function (doc) {
+                let compare = new Date(doc.date +' '+ doc.time.split("-")[0]);
+                if (compare > new Date())
+                    emit(compare);                
+                }.toString()
+            }
+        }
+        };
+        // save it
+        eventDB.put(ddoc).then(function () {
+        // success!
+        }).catch(function (err) {
+            console.log
+        });
+
+        return eventDB.query('start_time/asc',{ include_docs: true })
             .then(docs => {
 
                 // Each row has a .doc object and we just want to send an 
@@ -148,7 +167,6 @@ export default class Dashboard extends Backend{
     getEvents(params, date){
         params["ctl00$ContentPlaceHolder1$txtDate"] = date;
         params["ctl00$ContentPlaceHolder1$btnNext"] = ">>";
-        console.log(JSON.stringify(params));
         let queryFormwithParams = postCalendarForm;
         queryFormwithParams.form = params;
         return request(queryFormwithParams);
@@ -222,16 +240,12 @@ export default class Dashboard extends Backend{
         return temp;
     }
     grab(){
-        eventDB.allDocs()
-            .then(
-                (results) => console.log(results)
-            );
         this.loginwithHiddenParams().then(
                 (body) => context.requestMainPage()
             ).then(
                 (dump) => context.getHiddenParams()
             ).then(
-                (params) => context.pacemaker(params, 5, new Date())
+                (params) => context.pacemaker(params, 100, new Date())
             );
     }
 
@@ -267,7 +281,6 @@ export default class Dashboard extends Backend{
         ).then(
             (events) => {
                 context.sequentialSaveEvent(events);
-                console.log(JSON.stringify(events));
             }
         ).then(
             () => {
